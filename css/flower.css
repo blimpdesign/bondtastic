@@ -1,0 +1,81 @@
+﻿* {
+	box-sizing: border-box;
+}
+
+html, body {
+	height: 100%;
+	background-color: #fff;
+}
+
+#header .container-fluid {
+	margin: 0;
+	padding: 0;
+}
+
+#logos {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+}
+
+#content-wrapper {
+	min-height: 100%;
+}
+
+#stats {
+	position: fixed;
+	top: 100px;
+	width: 50px;
+}
+
+#property-icon {
+	width: 50px;
+}
+
+#stats h1, #stats p {
+	text-align: center;
+}
+
+#stats p.title {
+	font-size: 10px;
+}
+
+#content {
+	overflow: visible;
+	padding-top: 80px; /* Must be same height as header + top padding delta */
+	padding-bottom: 0px; /* Must be same height as footer */
+}
+
+.addthis_toolbox {
+	position: fixed;
+	top: 50%;
+	right: 15px;
+	margin-top: -95px;
+}
+
+#footer {
+	position: relative;
+	margin-top: -80px; /* negative value of footer height */
+	height: 80px;
+	clear: both;
+	border: none;
+	padding: 0px;
+}
+
+/*#svggroup {
+	-ms-transform: scaleY(-1);
+	-moz-transform: scaleY(-1);
+	-o-transform: scaleY(-1);
+	-webkit-transform: scaleY(-1);
+	transform: scaleY(-1);
+}*/
+
+/*Opera Fix*/
+body:before {
+	/* thanks to Maleika (Kohoutec)*/
+	content: "";
+	height: 100%;
+	float: left;
+	width: 0;
+	margin-top: -32767px; /* thank you Erik J - negate effect of float*/
+}

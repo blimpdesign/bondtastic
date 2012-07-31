@@ -1,0 +1,515 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/flower-dock.css" />
+	<link rel="stylesheet" type="text/css" href="css/flower.css" />
+</head>
+<body>
+	<header id="header">
+		<div class="container-fluid">
+			<div id="logos">
+				<a href="http://www.informationisbeautifulawards.com/" title="The Information is Beautiful Awards">
+					<img src="/images/iiba.png" width="80" height="80" alt="The Information is Beautiful Awards" /></a>
+				<img src="/images/blimp_logo_130.png" width="80" height="80" alt="Blimp Design" title="Blimp Design" />
+			</div>
+
+			<div class="row-fluid">
+				<!-- Begin: CSS Dock Code -->
+				<ul id="bonds" class="dock span12">
+					<li id="Connery">
+						<a href="#Connery"><em><span>Connery</span></em>
+							<img src="/images/Connery-Face.svg" alt="Connery" />
+						</a>
+					</li>
+					<li id="Lazenby" class="bond-icon">
+						<a href="#Lazenby"><em><span>Lazenby</span></em>
+							<img src="/images/Lazenby-Face.svg" alt="Lazenby" />
+						</a>
+					</li>
+					<li id="Moore" class="bond-icon">
+						<a href="#Moore"><em><span>Moore</span></em>
+							<img src="/images/Moore-Face.svg" alt="Moore" />
+						</a>
+					</li>
+					<li id="Dalton" class="bond-icon">
+						<a href="#Dalton"><em><span>Dalton</span></em>
+							<img src="/images/Dalton-Face.svg" alt="Dalton" />
+						</a>
+					</li>
+					<li id="Brosnan" class="bond-icon">
+						<a href="#Brosnan"><em><span>Brosnan</span></em>
+							<img src="/images/Brosnan-Face.svg" alt="Brosnan" />
+						</a>
+					</li>
+					<li id="Craig" class="bond-icon">
+						<a href="#Craig"><em><span>Craig</span></em>
+							<img src="/images/Craig-Face.svg" alt="Craig" />
+						</a>
+					</li>
+				</ul>
+				<!-- End: CSS Dock Code -->
+			</div>
+		</div>
+	</header>
+
+	<div id="content-wrapper" class="container-fluid">
+		<div id="stats">
+			<div class="">
+				<div id="property-icon">
+					
+				</div>
+				<div id="actual-value">
+					<h1 class="value"></h1>
+					<p class="title"></p>
+				</div>
+				<div id="min-value">
+					<h1 class="value"></h1>
+					<p class="title"></p>
+				</div>
+				<div id="max-value">
+					<h1 class="value"></h1>
+					<p class="title"></p>
+				</div>
+				<div id="total-avg-value">
+					<h1 class="value"></h1>
+					<p class="title"></p>
+				</div>
+				<div id="notes">
+					<p class="title"></p>
+				</div>
+			</div>
+		</div>
+		<div id="content" class="row-fluid"></div>
+		<div id="social">
+			<!-- AddThis Button BEGIN -->
+			<div class="addthis_toolbox addthis_floating_style addthis_32x32_style">
+				<a class="addthis_button_preferred_1"></a>
+				<a class="addthis_button_preferred_2"></a>
+				<a class="addthis_button_preferred_3"></a>
+				<a class="addthis_button_preferred_4"></a>
+				<a class="addthis_button_compact"></a>
+			</div>
+			<script type="text/javascript">var addthis_config = { "data_track_addressbar": false };</script>
+			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f2fbf8208949e70"></script>
+			<!-- AddThis Button END -->
+		</div>
+	</div>
+
+	<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+	<script type="text/javascript" src="js/jquery.extensions.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/flower-data.js"></script>
+	<script type="text/javascript" src="js/raphael.js"></script>
+	<script type="text/javascript" src="js/scale.raphael.js"></script>
+	<script type="text/javascript">
+		var $header = $('#header');
+		var $container = $('#content-wrapper');
+		var $content = $('#content');
+		var containerWidth, containerHeight, outerDiameter, outerRadius, paperCenter, innerRadius, imaginaryCircleRadius, imaginaryCircleCenters = [], imaginaryAngle, innerImaginaryAngle, innerImaginaryAngle2, innerMostRadius, innerMostImaginaryAngle, innerMiddleImaginaryAngle;
+		var selectedBond = -1;
+		var paper;
+		var iconWidth = 30;
+		var iconHeight = 30;
+		var iconDiagonal = Math.sqrt(iconWidth * iconWidth + iconHeight * iconHeight);
+		var halfIconDiagonal = iconDiagonal * 0.5;
+		var endCircleRadius = 5;
+		var endCircleAngle;
+		var minCurves = new Array(properties.length),
+			averageCurves = new Array(properties.length),
+			maxCurves = new Array(properties.length),
+			minFaces = new Array(properties.length),
+			maxFaces = new Array(properties.length),
+			minFaceNames = new Array(properties.length),
+			maxFaceNames = new Array(properties.length),
+			averageFaceNames = new Array(properties.length);
+			iconPaths = new Array(properties.length);
+
+		(function ($) {
+			var resizePaper = function () {
+				$container.height($(window).height() - $header.height());
+				containerWidth = $container.width();
+				containerHeight = $container.height();
+				outerDiameter = Math.min(containerWidth, containerHeight);
+				outerRadius = outerDiameter / 2;
+				imaginaryCircleRadius = outerRadius * 1.0;
+				imaginaryAngle = Math.atan(outerRadius / imaginaryCircleRadius);
+				innerRadius = 150;
+				innerMostRadius = 100;
+				//innerImaginaryAngle = Math.atan(innerRadius / imaginaryCircleRadius);
+				innerImaginaryAngle = Math.asin(innerRadius / imaginaryCircleRadius);
+				innerMostImaginaryAngle = Math.asin(innerMostRadius / imaginaryCircleRadius);
+				innerMiddleImaginaryAngle = Math.asin(0.5 * (innerMostRadius + innerRadius) / imaginaryCircleRadius);
+				endCircleAngle = Math.asin(endCircleRadius / imaginaryCircleRadius);
+				paperCenter = {
+					x: containerWidth / 2,
+					y: containerHeight / 2 - 40
+				};
+				if (!paper) {
+					paper = new ScaleRaphael("content", containerWidth, containerHeight);
+				}
+				else
+					paper.changeSize(containerWidth, containerHeight);
+			}
+
+			var draw = function () {
+				paper.clear();
+				var innerCircle = paper.circle(paperCenter.x, paperCenter.y, innerRadius);
+				innerCircle.attr("fill", "#ddd");
+				innerCircle.attr("stroke", "#ddd");
+				innerCircle.attr("stroke-width", "10");
+
+				var innerMostCircle = paper.circle(paperCenter.x, paperCenter.y, innerMostRadius);
+				innerMostCircle.attr("fill", "url('/images/" + bond_names[selectedBond] + ".png')");
+				innerMostCircle.attr("stroke", "none");
+
+				//$('#inner-' + bond_names[selectedBond]).('background', "url('/images/" + bond_names[selectedBond] + ".png') 0 0 100% no-repeat");
+				var theta = 0.0;
+				var dTheta = 2 * Math.PI / properties.length;
+				var halfDTheta = Math.PI / properties.length;
+				var quarterDTheta = 0.5 * Math.PI / properties.length;
+
+				//for (var i = 0; i < properties.length; i++) {
+				//	var thetaPlus90 = theta + Math.PI / 2;
+				//	var thetaMinus90 = theta - Math.PI / 2;
+
+				//	imaginaryCircleCenters[i] = {
+				//		x: paperCenter.x + imaginaryCircleRadius * Math.cos(thetaPlus90),
+				//		y: paperCenter.y + imaginaryCircleRadius * Math.sin(thetaPlus90)
+				//	};
+
+				//	//var curveString = $.format("M{0},{1} A{2},{2},{3},0,1,{4},{5}",
+				//	//	imaginaryCircleCenters[i].x + imaginaryCircleRadius * Math.cos(thetaMinus90 + innerImaginaryAngle),
+				//	//	imaginaryCircleCenters[i].y + imaginaryCircleRadius * Math.sin(thetaMinus90 + innerImaginaryAngle),
+				//	//	imaginaryCircleRadius,
+				//	//	imaginaryAngle - innerImaginaryAngle,
+				//	//	imaginaryCircleCenters[i].x + imaginaryCircleRadius * Math.cos(thetaMinus90 + imaginaryAngle),
+				//	//	imaginaryCircleCenters[i].y + imaginaryCircleRadius * Math.sin(thetaMinus90 + imaginaryAngle)
+				//	//	);
+				//	//var curve = paper.path(curveString);
+				//	//curve.attr("fill", "none");
+				//	//curve.attr("stroke", "#fff");
+
+				//	theta += dTheta;
+				//}
+
+				theta = 0.0;
+				for (var i = 0; i < properties.length; i++) {
+					var thetaPlus90 = theta + Math.PI / 2;
+					var thetaMinus90 = theta - Math.PI / 2;
+					var angle = (imaginaryAngle - innerImaginaryAngle) * normalized_bonds[selectedBond][properties[i]];
+					var minCurveAngle = (imaginaryAngle - innerImaginaryAngle) * normalized_Min_Property_Values[properties[i]];
+					var maxCurveAngle = (imaginaryAngle - innerImaginaryAngle) * normalized_Max_Property_Values[properties[i]];
+					var averageCurveAngle = (imaginaryAngle - innerImaginaryAngle) * normalized_Average_Property_Values[properties[i]];
+
+					var imaginaryCenter = {
+						x: paperCenter.x + imaginaryCircleRadius * Math.cos(thetaPlus90),
+						y: paperCenter.y + imaginaryCircleRadius * Math.sin(thetaPlus90)
+					}; //imaginaryCircleCenters[i];
+
+					var nextImaginaryCenter = {
+						x: paperCenter.x + imaginaryCircleRadius * Math.cos(thetaPlus90 + dTheta),
+						y: paperCenter.y + imaginaryCircleRadius * Math.sin(thetaPlus90 + dTheta)
+					}; //imaginaryCircleCenters[(i + 1) % properties.length];
+
+					var middleImaginaryCenter = {
+						x: paperCenter.x + imaginaryCircleRadius * Math.cos(thetaPlus90 + halfDTheta),
+						y: paperCenter.y + imaginaryCircleRadius * Math.sin(thetaPlus90 + halfDTheta)
+					};
+
+					var minCurveImaginaryCenter = {
+						x: paperCenter.x + imaginaryCircleRadius * Math.cos(thetaPlus90 + quarterDTheta),
+						y: paperCenter.y + imaginaryCircleRadius * Math.sin(thetaPlus90 + quarterDTheta)
+					};
+
+					var maxCurveImaginaryCenter = {
+						x: paperCenter.x + imaginaryCircleRadius * Math.cos(thetaPlus90 + halfDTheta + quarterDTheta),
+						y: paperCenter.y + imaginaryCircleRadius * Math.sin(thetaPlus90 + halfDTheta + quarterDTheta)
+					};
+
+					var averageCurveImaginaryCenter = middleImaginaryCenter;
+
+					var pathString = $.format("M{0},{1} A{2},{2},{3},0,0,{4},{5} A{6},{6},{7},0,1,{8},{9} A{2},{2},{3},0,1,{10},{11} A{12},{12},{13},0,0,{0},{1}",
+							imaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + innerImaginaryAngle + angle),
+							imaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + innerImaginaryAngle + angle),
+							imaginaryCircleRadius,
+							angle,
+							imaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + innerImaginaryAngle),
+							imaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + innerImaginaryAngle),
+							innerRadius,
+							dTheta,
+							nextImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + dTheta + innerImaginaryAngle),
+							nextImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + dTheta + innerImaginaryAngle),
+							nextImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + dTheta + innerImaginaryAngle + angle),
+							nextImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + dTheta + innerImaginaryAngle + angle),
+							innerRadius + (outerRadius - innerRadius) * normalized_bonds[selectedBond][properties[i]],
+							dTheta
+						);
+					var path = paper.path(pathString);
+					path.attr("fill", properties_colors[i]);
+					path.attr("stroke", "none");
+
+					var iconPathString = $.format("M{0},{1} A{2},{2},{3},0,0,{4},{5} A{6},{6},{7},0,1,{8},{9} A{2},{2},{3},0,1,{10},{11} A{12},{12},{13},0,0,{0},{1}",
+							imaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + innerImaginaryAngle),
+							imaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + innerImaginaryAngle),
+							imaginaryCircleRadius,
+							innerImaginaryAngle - innerMostImaginaryAngle,
+							imaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + innerMostImaginaryAngle),
+							imaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + innerMostImaginaryAngle),
+							innerMostRadius,
+							dTheta,
+							nextImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + dTheta + innerMostImaginaryAngle),
+							nextImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + dTheta + innerMostImaginaryAngle),
+							nextImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + dTheta + innerImaginaryAngle),
+							nextImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + dTheta + innerImaginaryAngle),
+							innerRadius,
+							dTheta
+						);
+					iconPaths[i] = paper.path(iconPathString);
+					iconPaths[i].attr("fill", "#aaa");
+					iconPaths[i].attr("stroke", "none");
+					iconPaths[i].attr("opacity", 0);
+					iconPaths[i].data('i', i);
+
+					var hoverPathString = $.format("M{0},{1} A{2},{2},{3},0,0,{4},{5} A{6},{6},{7},0,1,{8},{9} A{2},{2},{3},0,1,{10},{11} A{12},{12},{13},0,0,{0},{1}",
+							imaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + imaginaryAngle * 1.0),
+							imaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + imaginaryAngle * 1.0),
+							imaginaryCircleRadius,
+							1.0 * imaginaryAngle - innerImaginaryAngle,
+							imaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + innerImaginaryAngle),
+							imaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + innerImaginaryAngle),
+							innerRadius,
+							dTheta,
+							nextImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + dTheta + innerImaginaryAngle),
+							nextImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + dTheta + innerImaginaryAngle),
+							nextImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + dTheta + imaginaryAngle * 1.0),
+							nextImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + dTheta + imaginaryAngle * 1.0),
+							innerRadius + (outerRadius - innerRadius) * normalized_bonds[selectedBond][properties[i]],
+							dTheta
+						);
+					var hoverPath = paper.path(hoverPathString);
+					hoverPath.attr("fill-opacity", 0);
+					hoverPath.attr("fill", properties_colors[i]);
+					hoverPath.attr("stroke", "none");
+					hoverPath.data('i', i);
+
+					minCurves[i] = paper.path($.format("M{0},{1} A{2},{2},{3},0,1,{4},{5}",
+							minCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + quarterDTheta + innerImaginaryAngle),
+							minCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + quarterDTheta + innerImaginaryAngle),
+							imaginaryCircleRadius,
+							minCurveAngle,
+							minCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle),
+							minCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle)
+						))
+					minCurves[i].attr("stroke", dark_properties_colors[i]);
+					minCurves[i].attr("stroke-width", "10");
+					minCurves[i].attr("opacity", 0);
+
+					minFaces[i] = paper.image(
+							"/images/" + min_Property_Bond_Names[properties[i]][0] + "-Face.svg",
+							minCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle) - 15,
+							minCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle) - 30,
+							30, 30
+						).rotate(Raphael.deg(Math.PI / 2 + theta + quarterDTheta + innerImaginaryAngle + minCurveAngle).toString(),
+							minCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle),
+							minCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle)
+						).attr('title', max_Property_Bond_Names[properties[i]][0])
+						 .attr('opacity', 0);
+
+					var minFaceNameTheta = thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle + Raphael.rad(6);
+					var minFaceNameRotate = Raphael.deg(Math.PI / 2 + theta + quarterDTheta + innerImaginaryAngle + minCurveAngle);
+					if (minFaceNameRotate > 90 && minFaceNameRotate < 270)
+						minFaceNameRotate += 180;
+
+					minFaceNames[i] = paper.text(minCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(minFaceNameTheta),
+							minCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(minFaceNameTheta),
+							min_Property_Bond_Names[properties[i]][0]
+						).rotate(minFaceNameRotate.toString(),
+							minCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(minFaceNameTheta),
+							minCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(minFaceNameTheta)
+						).attr('opacity', 0);
+
+					averageCurves[i] = paper.path($.format("M{0},{1} A{2},{2},{3},0,1,{4},{5}",
+							averageCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + innerImaginaryAngle),
+							averageCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + innerImaginaryAngle),
+							imaginaryCircleRadius,
+							averageCurveAngle,
+							averageCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + innerImaginaryAngle + averageCurveAngle),
+							averageCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + innerImaginaryAngle + averageCurveAngle)
+						));
+					averageCurves[i].attr("stroke", dark_properties_colors[i]);
+					averageCurves[i].attr("stroke-width", "10");
+					averageCurves[i].attr("opacity", 0);
+
+					var averageFaceNameTheta = thetaMinus90 + halfDTheta + innerImaginaryAngle + averageCurveAngle + Raphael.rad(2);
+					var averageFaceNameRotate = Raphael.deg(Math.PI / 2 + theta + halfDTheta + innerImaginaryAngle + averageCurveAngle);
+					if (averageFaceNameRotate > 90 && averageFaceNameRotate < 270)
+						averageFaceNameRotate += 180;
+
+					averageFaceNames[i] = paper.text(averageCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(averageFaceNameTheta),
+							averageCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(averageFaceNameTheta),
+							"Avg."
+						).rotate(averageFaceNameRotate.toString(),
+							averageCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(averageFaceNameTheta),
+							averageCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(averageFaceNameTheta)
+						).attr('opacity', 0);
+
+					maxCurves[i] = paper.path($.format("M{0},{1} A{2},{2},{3},0,1,{4},{5}",
+						maxCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle),
+							maxCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle),
+							imaginaryCircleRadius,
+							maxCurveAngle,
+							maxCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle),
+							maxCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle)
+						))
+					maxCurves[i].attr("stroke", dark_properties_colors[i]);
+					maxCurves[i].attr("stroke-width", "10");
+					maxCurves[i].attr("opacity", 0);
+
+					maxFaces[i] = paper.image(
+							"/images/" + max_Property_Bond_Names[properties[i]][0] + "-Face.svg",
+							maxCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle) - 15,
+							maxCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle) - 30,
+							30, 30
+						).rotate(Raphael.deg(Math.PI / 2 + theta + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle).toString(),
+							maxCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle),
+							maxCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle)
+						).attr('title', max_Property_Bond_Names[properties[i]][0])
+						 .attr('opacity', 0);
+
+					var maxFaceNameTheta = thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle + Raphael.rad(6);
+					var maxFaceNameRotate = Raphael.deg(Math.PI / 2 + theta + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle);
+					if (maxFaceNameRotate > 90 && maxFaceNameRotate < 270)
+						maxFaceNameRotate += 180;
+
+					maxFaceNames[i] = paper.text(maxCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(maxFaceNameTheta),
+							maxCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(maxFaceNameTheta),
+							max_Property_Bond_Names[properties[i]][0]
+						).rotate(maxFaceNameRotate.toString(),
+							maxCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(maxFaceNameTheta),
+							maxCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(maxFaceNameTheta)
+						).attr('opacity', 0);
+
+					var iconPosition = {
+						x: middleImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + innerMiddleImaginaryAngle) - 0.5 * iconWidth, //2 * Math.asin(1.5 * halfIconDiagonal / imaginaryCircleRadius)), //+ iconWidth * Math.cos(theta + halfDTheta),
+						y: middleImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + innerMiddleImaginaryAngle) - 0.5 * iconHeight  //2 * Math.asin(1.5 * halfIconDiagonal / imaginaryCircleRadius)) //+ iconHeight * Math.sin(theta + halfDTheta),
+					};
+					var icon = paper.image("/images/" + properties[i] + ".svg", iconPosition.x, iconPosition.y, iconWidth, iconHeight).attr('title', properties[i]).attr('fill', properties_colors[i]);
+
+					hoverPath.hover(function () {
+						var i = this.data('i');
+						for (var j = 0; j < properties.length; j++) {
+							if (i == j) {
+								minCurves[j].attr('opacity', 0.7);
+								averageCurves[j].attr('opacity', 0.7);
+								maxCurves[j].attr('opacity', 0.7);
+								minFaces[j].attr('opacity', 1);
+								minFaceNames[j].attr('opacity', 1);
+								maxFaces[j].attr('opacity', 1);
+								maxFaceNames[j].attr('opacity', 1);
+								averageFaceNames[j].attr('opacity', 1);
+								iconPaths[j].attr('opacity', 0.8);
+							} else {
+								minCurves[j].attr('opacity', 0.2);
+								averageCurves[j].attr('opacity', 0.2);
+								maxCurves[j].attr('opacity', 0.2);
+								minFaces[j].attr('opacity', 0);
+								minFaceNames[j].attr('opacity', 0);
+								maxFaces[j].attr('opacity', 0);
+								maxFaceNames[j].attr('opacity', 0);
+								averageFaceNames[j].attr('opacity', 0);
+								iconPaths[j].attr('opacity', 0);
+							}
+						}
+						$('#property-icon').html('<img src="/images/' + properties[i] + '.svg" />');
+						$('#actual-value .value').text(bonds[selectedBond][properties[i]].toFixed(1));
+						$('#actual-value .title').text(property_display_names[i]);
+						$('#min-value .value').text(min_Property_Values[properties[i]].toFixed(1));
+						$('#min-value .title').html("Min (" + "<a href='" + "'>" + min_Property_Bond_Names[properties[i]][0] + "</a>" + ")");
+						$('#max-value .value').text(max_Property_Values[properties[i]].toFixed(1));
+						$('#max-value .title').html("Max (" + "<a href='" + "'>" + max_Property_Bond_Names[properties[i]][0] + "</a>" + ")");
+						$('#total-avg-value .value').text(average_Property_Values[properties[i]].toFixed(1));
+						$('#total-avg-value .title').text("Avg");
+						$('#notes .title').text("* All attribute values except film are averages per film");
+					}, function () {
+						var i = this.data('i');
+						for (var j = 0; j < properties.length; j++) {
+							//minCurves[j].attr('opacity', 0);
+							//averageCurves[j].attr('opacity', 0);
+							//maxCurves[j].attr('opacity', 0);
+							//minFaces[j].attr('opacity', 0);
+							//maxFaces[j].attr('opacity', 0);
+							//iconPaths[j].attr('opacity', 0);
+						}
+					});
+
+					iconPaths[i].hover(function () {
+						var i = this.data('i');
+						for (var j = 0; j < properties.length; j++) {
+							if (i == j) {
+								minCurves[j].attr('opacity', 0.7);
+								averageCurves[j].attr('opacity', 0.7);
+								maxCurves[j].attr('opacity', 0.7);
+								minFaces[j].attr('opacity', 1);
+								minFaceNames[j].attr('opacity', 1);
+								maxFaces[j].attr('opacity', 1);
+								maxFaceNames[j].attr('opacity', 1);
+								iconPaths[j].attr('opacity', 0.8);
+								$('#property-icon').html('<img src="/images/' + properties[i] + '.svg" />');
+								$('#actual-value .value').text(bonds[selectedBond][properties[i]].toFixed(1));
+								$('#actual-value .title').text(property_display_names[i]);
+								$('#min-value .value').text(min_Property_Values[properties[i]].toFixed(1));
+								$('#min-value .title').text("Min");
+								$('#max-value .value').text(max_Property_Values[properties[i]].toFixed(1));
+								$('#max-value .title').text("Max");
+								$('#total-avg-value .value').text(average_Property_Values[properties[i]].toFixed(1));
+								$('#total-avg-value .title').text("Avg");
+							} else {
+								minCurves[j].attr('opacity', 0.2);
+								averageCurves[j].attr('opacity', 0.2);
+								maxCurves[j].attr('opacity', 0.2);
+								minFaces[j].attr('opacity', 0);
+								minFaceNames[j].attr('opacity', 0);
+								maxFaces[j].attr('opacity', 0);
+								maxFaceNames[j].attr('opacity', 0);
+								iconPaths[j].attr('opacity', 0);
+							}
+						}
+					}, function () {
+						var i = this.data('i');
+						for (var j = 0; j < properties.length; j++) {
+							//minCurves[j].attr('opacity', 0);
+							//averageCurves[j].attr('opacity', 0);
+							//maxCurves[j].attr('opacity', 0);
+							//minFaces[j].attr('opacity', 0);
+							//maxFaces[j].attr('opacity', 0);
+							//iconPaths[j].attr('opacity', 0);
+						}
+					});
+
+					theta += dTheta;
+				}
+
+				//paper.animate({ rotation: 360, cx: paperCenter.x, cy: paperCenter.y }, 2000);
+			}
+
+			$(window).on('resize', resizePaper);
+
+			$('#bonds > li').on('click', function (e) {
+				selectedBond = $(this).index();
+				$('#bonds > li').removeClass('selected');
+				$(this).addClass('selected');
+				resizePaper();
+				draw();
+			});
+
+			var hash = window.location.hash;
+			if (hash)
+				$('' + hash).click();
+			else
+				$('#bonds > li:first').click();
+		})(jQuery);
+	</script>
+</body>
+</html>
