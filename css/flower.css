@@ -24,8 +24,10 @@ html, body {
 
 #stats {
 	position: fixed;
-	top: 100px;
+	top: 50%;
 	width: 50px;
+	z-index: 100;
+	margin-top: -260px;
 }
 
 #property-icon {
@@ -44,6 +46,14 @@ html, body {
 	overflow: visible;
 	padding-top: 80px; /* Must be same height as header + top padding delta */
 	padding-bottom: 0px; /* Must be same height as footer */
+}
+
+#notes {
+	position: fixed;
+	bottom: 0;
+	font-size: 10px;
+	width: 100%;
+	text-align: center;
 }
 
 .addthis_toolbox {
@@ -78,4 +88,10 @@ body:before {
 	float: left;
 	width: 0;
 	margin-top: -32767px; /* thank you Erik J - negate effect of float*/
+}
+
+hr {
+	margin-top: 10px;
+	border-color: #555;
+	display: none;
 }

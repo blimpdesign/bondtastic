@@ -187,6 +187,10 @@ may need to adjust the width negative margin if you have really long labels. */
 .dock li:hover em {
     display: block;
 }
+
+.dock li.selected em {
+    display: block;
+}
 /* @end */
 
 /* @group Icon */

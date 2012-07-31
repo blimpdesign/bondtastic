@@ -5,6 +5,17 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/flower-dock.css" />
 	<link rel="stylesheet" type="text/css" href="css/flower.css" />
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-33771683-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function () {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 </head>
 <body>
 	<header id="header">
@@ -58,27 +69,27 @@
 		<div id="stats">
 			<div class="">
 				<div id="property-icon">
-					
 				</div>
 				<div id="actual-value">
 					<h1 class="value"></h1>
 					<p class="title"></p>
 				</div>
+				<hr />
 				<div id="min-value">
 					<h1 class="value"></h1>
 					<p class="title"></p>
 				</div>
+				<hr />
 				<div id="max-value">
 					<h1 class="value"></h1>
 					<p class="title"></p>
 				</div>
+				<hr />
 				<div id="total-avg-value">
 					<h1 class="value"></h1>
 					<p class="title"></p>
 				</div>
-				<div id="notes">
-					<p class="title"></p>
-				</div>
+				<hr />
 			</div>
 		</div>
 		<div id="content" class="row-fluid"></div>
@@ -95,6 +106,10 @@
 			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f2fbf8208949e70"></script>
 			<!-- AddThis Button END -->
 		</div>
+	</div>
+
+	<div id="notes">
+		* All attribute values except film are averages per film
 	</div>
 
 	<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
@@ -124,7 +139,7 @@
 			minFaceNames = new Array(properties.length),
 			maxFaceNames = new Array(properties.length),
 			averageFaceNames = new Array(properties.length);
-			iconPaths = new Array(properties.length);
+		iconPaths = new Array(properties.length);
 
 		(function ($) {
 			var resizePaper = function () {
@@ -144,7 +159,7 @@
 				endCircleAngle = Math.asin(endCircleRadius / imaginaryCircleRadius);
 				paperCenter = {
 					x: containerWidth / 2,
-					y: containerHeight / 2 - 40
+					y: containerHeight / 2 - 50
 				};
 				if (!paper) {
 					paper = new ScaleRaphael("content", containerWidth, containerHeight);
@@ -424,14 +439,14 @@
 						}
 						$('#property-icon').html('<img src="images/' + properties[i] + '.svg" />');
 						$('#actual-value .value').text(bonds[selectedBond][properties[i]].toFixed(1));
-						$('#actual-value .title').text(property_display_names[i]);
+						$('#actual-value .title').html(property_display_names[i] + "<br />(<a href='" + "'>" + bond_names[selectedBond] + "</a>" + ")");
 						$('#min-value .value').text(min_Property_Values[properties[i]].toFixed(1));
-						$('#min-value .title').html("Min (" + "<a href='" + "'>" + min_Property_Bond_Names[properties[i]][0] + "</a>" + ")");
+						$('#min-value .title').html("Min <br />(" + "<a href='" + "'>" + min_Property_Bond_Names[properties[i]][0] + "</a>" + ")");
 						$('#max-value .value').text(max_Property_Values[properties[i]].toFixed(1));
-						$('#max-value .title').html("Max (" + "<a href='" + "'>" + max_Property_Bond_Names[properties[i]][0] + "</a>" + ")");
+						$('#max-value .title').html("Max <br />(" + "<a href='" + "'>" + max_Property_Bond_Names[properties[i]][0] + "</a>" + ")");
 						$('#total-avg-value .value').text(average_Property_Values[properties[i]].toFixed(1));
 						$('#total-avg-value .title').text("Avg");
-						$('#notes .title').text("* All attribute values except film are averages per film");
+						$('hr').show();
 					}, function () {
 						var i = this.data('i');
 						for (var j = 0; j < properties.length; j++) {
@@ -455,16 +470,8 @@
 								minFaceNames[j].attr('opacity', 1);
 								maxFaces[j].attr('opacity', 1);
 								maxFaceNames[j].attr('opacity', 1);
+								averageFaceNames[j].attr('opacity', 1);
 								iconPaths[j].attr('opacity', 0.8);
-								$('#property-icon').html('<img src="images/' + properties[i] + '.svg" />');
-								$('#actual-value .value').text(bonds[selectedBond][properties[i]].toFixed(1));
-								$('#actual-value .title').text(property_display_names[i]);
-								$('#min-value .value').text(min_Property_Values[properties[i]].toFixed(1));
-								$('#min-value .title').text("Min");
-								$('#max-value .value').text(max_Property_Values[properties[i]].toFixed(1));
-								$('#max-value .title').text("Max");
-								$('#total-avg-value .value').text(average_Property_Values[properties[i]].toFixed(1));
-								$('#total-avg-value .title').text("Avg");
 							} else {
 								minCurves[j].attr('opacity', 0.2);
 								averageCurves[j].attr('opacity', 0.2);
@@ -473,9 +480,20 @@
 								minFaceNames[j].attr('opacity', 0);
 								maxFaces[j].attr('opacity', 0);
 								maxFaceNames[j].attr('opacity', 0);
+								averageFaceNames[j].attr('opacity', 0);
 								iconPaths[j].attr('opacity', 0);
 							}
 						}
+						$('#property-icon').html('<img src="images/' + properties[i] + '.svg" />');
+						$('#actual-value .value').text(bonds[selectedBond][properties[i]].toFixed(1));
+						$('#actual-value .title').html(property_display_names[i] + "<br />( <a href='" + "'>" + bond_names[selectedBond] + "</a>" + ")");
+						$('#min-value .value').text(min_Property_Values[properties[i]].toFixed(1));
+						$('#min-value .title').html("Min (" + "<a href='" + "'>" + min_Property_Bond_Names[properties[i]][0] + "</a>" + ")");
+						$('#max-value .value').text(max_Property_Values[properties[i]].toFixed(1));
+						$('#max-value .title').html("Max (" + "<a href='" + "'>" + max_Property_Bond_Names[properties[i]][0] + "</a>" + ")");
+						$('#total-avg-value .value').text(average_Property_Values[properties[i]].toFixed(1));
+						$('#total-avg-value .title').text("Avg");
+						$('hr').show();
 					}, function () {
 						var i = this.data('i');
 						for (var j = 0; j < properties.length; j++) {
