@@ -11,8 +11,8 @@
 		<div class="container-fluid">
 			<div id="logos">
 				<a href="http://www.informationisbeautifulawards.com/" title="The Information is Beautiful Awards">
-					<img src="/images/iiba.png" width="80" height="80" alt="The Information is Beautiful Awards" /></a>
-				<img src="/images/blimp_logo_130.png" width="80" height="80" alt="Blimp Design" title="Blimp Design" />
+					<img src="images/iiba.png" width="80" height="80" alt="The Information is Beautiful Awards" /></a>
+				<img src="images/blimp_logo_130.png" width="80" height="80" alt="Blimp Design" title="Blimp Design" />
 			</div>
 
 			<div class="row-fluid">
@@ -20,32 +20,32 @@
 				<ul id="bonds" class="dock span12">
 					<li id="Connery">
 						<a href="#Connery"><em><span>Connery</span></em>
-							<img src="/images/Connery-Face.svg" alt="Connery" />
+							<img src="images/Connery-Face.svg" alt="Connery" />
 						</a>
 					</li>
 					<li id="Lazenby" class="bond-icon">
 						<a href="#Lazenby"><em><span>Lazenby</span></em>
-							<img src="/images/Lazenby-Face.svg" alt="Lazenby" />
+							<img src="images/Lazenby-Face.svg" alt="Lazenby" />
 						</a>
 					</li>
 					<li id="Moore" class="bond-icon">
 						<a href="#Moore"><em><span>Moore</span></em>
-							<img src="/images/Moore-Face.svg" alt="Moore" />
+							<img src="images/Moore-Face.svg" alt="Moore" />
 						</a>
 					</li>
 					<li id="Dalton" class="bond-icon">
 						<a href="#Dalton"><em><span>Dalton</span></em>
-							<img src="/images/Dalton-Face.svg" alt="Dalton" />
+							<img src="images/Dalton-Face.svg" alt="Dalton" />
 						</a>
 					</li>
 					<li id="Brosnan" class="bond-icon">
 						<a href="#Brosnan"><em><span>Brosnan</span></em>
-							<img src="/images/Brosnan-Face.svg" alt="Brosnan" />
+							<img src="images/Brosnan-Face.svg" alt="Brosnan" />
 						</a>
 					</li>
 					<li id="Craig" class="bond-icon">
 						<a href="#Craig"><em><span>Craig</span></em>
-							<img src="/images/Craig-Face.svg" alt="Craig" />
+							<img src="images/Craig-Face.svg" alt="Craig" />
 						</a>
 					</li>
 				</ul>
@@ -161,10 +161,10 @@
 				innerCircle.attr("stroke-width", "10");
 
 				var innerMostCircle = paper.circle(paperCenter.x, paperCenter.y, innerMostRadius);
-				innerMostCircle.attr("fill", "url('/images/" + bond_names[selectedBond] + ".png')");
+				innerMostCircle.attr("fill", "url('images/" + bond_names[selectedBond] + ".png')");
 				innerMostCircle.attr("stroke", "none");
 
-				//$('#inner-' + bond_names[selectedBond]).('background', "url('/images/" + bond_names[selectedBond] + ".png') 0 0 100% no-repeat");
+				//$('#inner-' + bond_names[selectedBond]).('background', "url('images/" + bond_names[selectedBond] + ".png') 0 0 100% no-repeat");
 				var theta = 0.0;
 				var dTheta = 2 * Math.PI / properties.length;
 				var halfDTheta = Math.PI / properties.length;
@@ -307,7 +307,7 @@
 					minCurves[i].attr("opacity", 0);
 
 					minFaces[i] = paper.image(
-							"/images/" + min_Property_Bond_Names[properties[i]][0] + "-Face.svg",
+							"images/" + min_Property_Bond_Names[properties[i]][0] + "-Face.svg",
 							minCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle) - 15,
 							minCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + quarterDTheta + innerImaginaryAngle + minCurveAngle) - 30,
 							30, 30
@@ -368,7 +368,7 @@
 					maxCurves[i].attr("opacity", 0);
 
 					maxFaces[i] = paper.image(
-							"/images/" + max_Property_Bond_Names[properties[i]][0] + "-Face.svg",
+							"images/" + max_Property_Bond_Names[properties[i]][0] + "-Face.svg",
 							maxCurveImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle) - 15,
 							maxCurveImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + quarterDTheta + innerImaginaryAngle + maxCurveAngle) - 30,
 							30, 30
@@ -395,7 +395,7 @@
 						x: middleImaginaryCenter.x + imaginaryCircleRadius * Math.cos(thetaMinus90 + halfDTheta + innerMiddleImaginaryAngle) - 0.5 * iconWidth, //2 * Math.asin(1.5 * halfIconDiagonal / imaginaryCircleRadius)), //+ iconWidth * Math.cos(theta + halfDTheta),
 						y: middleImaginaryCenter.y + imaginaryCircleRadius * Math.sin(thetaMinus90 + halfDTheta + innerMiddleImaginaryAngle) - 0.5 * iconHeight  //2 * Math.asin(1.5 * halfIconDiagonal / imaginaryCircleRadius)) //+ iconHeight * Math.sin(theta + halfDTheta),
 					};
-					var icon = paper.image("/images/" + properties[i] + ".svg", iconPosition.x, iconPosition.y, iconWidth, iconHeight).attr('title', properties[i]).attr('fill', properties_colors[i]);
+					var icon = paper.image("images/" + properties[i] + ".svg", iconPosition.x, iconPosition.y, iconWidth, iconHeight).attr('title', properties[i]).attr('fill', properties_colors[i]);
 
 					hoverPath.hover(function () {
 						var i = this.data('i');
@@ -422,7 +422,7 @@
 								iconPaths[j].attr('opacity', 0);
 							}
 						}
-						$('#property-icon').html('<img src="/images/' + properties[i] + '.svg" />');
+						$('#property-icon').html('<img src="images/' + properties[i] + '.svg" />');
 						$('#actual-value .value').text(bonds[selectedBond][properties[i]].toFixed(1));
 						$('#actual-value .title').text(property_display_names[i]);
 						$('#min-value .value').text(min_Property_Values[properties[i]].toFixed(1));
@@ -456,7 +456,7 @@
 								maxFaces[j].attr('opacity', 1);
 								maxFaceNames[j].attr('opacity', 1);
 								iconPaths[j].attr('opacity', 0.8);
-								$('#property-icon').html('<img src="/images/' + properties[i] + '.svg" />');
+								$('#property-icon').html('<img src="images/' + properties[i] + '.svg" />');
 								$('#actual-value .value').text(bonds[selectedBond][properties[i]].toFixed(1));
 								$('#actual-value .title').text(property_display_names[i]);
 								$('#min-value .value').text(min_Property_Values[properties[i]].toFixed(1));
