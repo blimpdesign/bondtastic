@@ -1,7 +1,9 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title></title>
+	<title>Bondtastic - Flower Chart</title>
+	<meta charset="utf-8" />
+	<meta name="keywords" content="visualization,viz,infovis,information visualization,iib,information is beautiful,challenge,blimp,bond,james bond,007,interactive,raphael" />
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/flower-dock.css" />
 	<link rel="stylesheet" type="text/css" href="css/flower.css" />
@@ -61,6 +63,12 @@
 					</li>
 				</ul>
 				<!-- End: CSS Dock Code -->
+			</div>
+
+			<div id="links">
+				<a href="views/JBondHome.html" title="All bonds">
+					<img src="images/bar.png" alt="All bonds"/>
+				</a>
 			</div>
 		</div>
 	</header>
@@ -146,7 +154,7 @@
 				$container.height($(window).height() - $header.height());
 				containerWidth = $container.width();
 				containerHeight = $container.height();
-				outerDiameter = Math.min(containerWidth, containerHeight);
+				outerDiameter = Math.min(containerWidth, containerHeight) * 0.95;
 				outerRadius = outerDiameter / 2;
 				imaginaryCircleRadius = outerRadius * 1.0;
 				imaginaryAngle = Math.atan(outerRadius / imaginaryCircleRadius);
@@ -159,7 +167,7 @@
 				endCircleAngle = Math.asin(endCircleRadius / imaginaryCircleRadius);
 				paperCenter = {
 					x: containerWidth / 2,
-					y: containerHeight / 2 - 50
+					y: containerHeight / 2 - 25
 				};
 				if (!paper) {
 					paper = new ScaleRaphael("content", containerWidth, containerHeight);

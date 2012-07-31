@@ -171,8 +171,8 @@ may need to adjust the width negative margin if you have really long labels. */
 /* This is the actual label. */
 .dock em span {
     display: inline-block;
-    padding: 5px 12px;
-    font-size: 14px;
+    padding: 1px 12px;
+    font-size: 10px;
     font-style: normal;
     color: #FFF;
     background: #000;
