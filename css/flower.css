@@ -103,3 +103,12 @@ hr {
 	border-color: #555;
 	display: none;
 }
+
+/*added for acknowledgement page to show two column list of icons used */
+#twocolumn {
+
+ padding-top:10px;
+-webkit-column-count: 2; 
+-webkit-column-gap: 1em;
+
+}
