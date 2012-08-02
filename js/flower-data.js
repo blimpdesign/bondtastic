@@ -121,7 +121,7 @@ var bond_names = ["Connery", "Lazenby", "Moore", "Dalton", "Brosnan", "Craig"];
 
 var properties = ["Films", "Average Kills", "Average Kissed", "Average Slept With", "Average Believed Dead", "Average Bond James Bond", "Average Martinis Drunk", "Average Audience Rating", "Average Rotten Tomatoes Rating", "Average Profitability"];
 
-var property_display_names = ["Films", "Kills", "Girls kissed", "Girls bedded", "Times believed dead", "'Bond. James. Bond.' used", "Martinis Drunk", "Audience rating (%)", "Critics (RT) Rating (%)", "Profitability (%)"];
+var property_display_names = ["Films", "Kills", "Girls kissed", "Girls bedded", "Times believed dead", "'Bond. James. Bond.' used", "Martinis Drunk", "Audience rating (%)", "Critics (RT) Rating (%)", "Profitability (x)"];
 
 var properties_colors = [
 	"#c8c4b7",
